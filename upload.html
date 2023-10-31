@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Heatmap Example</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-heat@0.2.0/dist/leaflet-heat.js"></script>
+</head>
+<body>
+    <input type="file" id="fileInput" accept=".json">
+    <div id="map" style="height: 500px;"></div>
+
+    <script>
+        var map = L.map('map').setView([12.9662976, 77.594624], 10); // Set the initial map center and zoom level
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        var heatLayer;
+        var circleLayer;
+
+        // Function to handle file input change
+        function handleFileSelect(event) {
+            var input = event.target;
+            var reader = new FileReader();
+
+            reader.onload = function () {
+                try {
+                    var jsonData = JSON.parse(reader.result);
+
+                    var heatData = jsonData.map(function (item) {
+                        var location = item.location.match(/[-+]?([0-9]*\.[0-9]+|[0-9]+)/g);
+                        if (location && location.length === 2) {
+                            var lat = parseFloat(location[0]);
+                            var lng = parseFloat(location[1]);
+                            var count = parseInt(item.count);
+                            return [lat, lng, count, item.name]; // Include name as the fourth parameter
+                        }
+                    });
+
+                    if (heatLayer) {
+                        map.removeLayer(heatLayer);
+                    }
+
+                    if (circleLayer) {
+                        map.removeLayer(circleLayer);
+                    }
+
+                    heatLayer = L.heatLayer(heatData, {
+                        radius: 25, // Adjust the radius as needed
+                        gradient: { 0.4: 'blue', 0.65: 'lime', 1: 'red' } // Customize the color gradient
+                    }).addTo(map);
+
+                    circleLayer = L.featureGroup().addTo(map);
+
+                    // Add circles for intensity
+                    heatData.forEach(function (data) {
+                        var latlng = L.latLng(data[0], data[1]);
+                        var count = data[2];
+                        var name = data[3];
+                        L.circle(latlng, {
+                            radius: count * 1000, // Adjust the size of the circle based on intensity
+                            color: 'red',
+                            fillOpacity: 0.5
+                        }).bindPopup(name + "<br>Intensity: " + count).addTo(circleLayer);
+                    });
+                } catch (e) {
+                    console.error('Error parsing JSON:', e);
+                }
+            };
+
+            reader.readAsText(input.files[0]);
+        }
+
+        // Attach the file input change event
+        document.getElementById('fileInput').addEventListener('change', handleFileSelect, false);
+    </script>
+</body>
+</html>
