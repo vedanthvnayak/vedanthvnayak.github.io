@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code Hut(vedanth's site) 3d obj</title>
+    <title>Code Hut (vedanth's site)</title>
     <style>
         body, html {
             margin: 0;
@@ -14,26 +14,33 @@
 
         #fullscreen {
             position: fixed;
-            bottom: 0;
+            top: 0;
             left: 0;
             width: 100vw;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #fff;
+            height: 100vh;
             z-index: 9999;
-            padding: 20px;
+        }
+
+        #myIframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            object-fit: cover;
         }
 
         #fullContentButton {
-            margin-top: 20px;
-            display: inline-block;
-            padding: 10px 20px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100vw;
+            height: 70px; /* Increase the button height */
             background-color: #4caf50;
             color: white;
+            text-align: center;
+            line-height: 70px; /* Center the text vertically */
             text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
+            border: none;
+            z-index: 10000;
         }
 
         #fullContentButton:hover {
@@ -44,7 +51,7 @@
 
 <body>
     <div id="fullscreen">
-        <iframe id="myIframe" src='https://my.spline.design/planetcopy-d41f3431e0345d1b4a018252e139f61d/' frameborder='0' width='100%' height='100%'></iframe>
+        <iframe id="myIframe" src='https://my.spline.design/planetcopy-d41f3431e0345d1b4a018252e139f61d/' frameborder='0'></iframe>
         <a href="https://vedanthvnayak.github.io/" id="fullContentButton">Full content</a>
     </div>
 </body>
